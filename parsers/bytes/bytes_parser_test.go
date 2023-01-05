@@ -22,7 +22,7 @@ var expectedMessage = model.EmissionsMessage{
 }
 
 func Test_BytesParser_WithValidMessageBytes_ReturnsValidStruct(t *testing.T) {
-	message, error := parseMessage(testBytes)
+	message, error := ParseMessage(testBytes)
 
 	if error != nil {
 		t.Fatal("unexpected error thrown")
