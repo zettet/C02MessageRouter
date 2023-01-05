@@ -10,12 +10,7 @@ const (
 	TYPE = "tcp"
 )
 
-var tcpConnection *net.TCPConn = nil
-
-func getConnection() (*net.TCPConn, error) {
-	if tcpConnection != nil {
-		return tcpConnection, nil
-	}
+func GetTCPConnection() (*net.TCPConn, error) {
 	tcpServer, err := net.ResolveTCPAddr(TYPE, HOST+":"+PORT)
 	if err != nil {
 		return nil, err
@@ -28,14 +23,13 @@ func getConnection() (*net.TCPConn, error) {
 	return connection, nil
 }
 
-func fetchData(conn *net.TCPConn) ([]byte, error) {
+func FetchTCPData(conn *net.TCPConn) ([]byte, error) {
 	received := make([]byte, 1024)
 	_, err := conn.Read(received)
+	conn.Close()
 	if err != nil {
 		return nil, err
 	}
-
-	conn.Close()
 
 	return received, nil
 }

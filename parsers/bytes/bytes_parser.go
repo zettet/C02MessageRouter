@@ -7,7 +7,7 @@ import (
 	"math"
 )
 
-func parseMessage(messageBytes []byte) (model.EmissionsMessage, error) {
+func ParseMessage(messageBytes []byte) (model.EmissionsMessage, error) {
 	message, error := _parseMessageBytes(messageBytes)
 	if error != nil {
 		errorMsg := fmt.Errorf("error parsing message with error: %v", error)
