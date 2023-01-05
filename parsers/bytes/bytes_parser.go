@@ -1,20 +1,20 @@
-package EmissionsMessageRouter
+package bytes
 
 import (
+	"EmissionsMessageRouter/model"
 	"encoding/binary"
 	"fmt"
 	"math"
 )
 
-func handleMessage(messageBytes []byte) (EmissionsMessage, error) {
-	message, error := parseMessageBytes(messageBytes)
+func parseMessage(messageBytes []byte) (model.EmissionsMessage, error) {
+	message, error := _parseMessageBytes(messageBytes)
 	if error != nil {
 		errorMsg := fmt.Errorf("error parsing message with error: %v", error)
 		fmt.Println(errorMsg)
-		return EmissionsMessage{}, errorMsg
+		return model.EmissionsMessage{}, errorMsg
 	}
 
-	fmt.Println(message)
 	return message, nil
 }
 
@@ -33,10 +33,10 @@ func handleMessage(messageBytes []byte) (EmissionsMessage, error) {
  * altitude: 8 bytes, IEEE-754 64-bit floating-point number
  * temperature: 8 bytes, IEEE-754 64-bit floating-point number
  */
-func parseMessageBytes(messageBytes []byte) (EmissionsMessage, error) {
+func _parseMessageBytes(messageBytes []byte) (model.EmissionsMessage, error) {
 
-	if !validateHeader(messageBytes) {
-		return EmissionsMessage{}, fmt.Errorf("Invalid Header")
+	if !_validateHeader(messageBytes) {
+		return model.EmissionsMessage{}, fmt.Errorf("Invalid Header")
 	}
 
 	var headerIndex = 0
@@ -68,29 +68,19 @@ func parseMessageBytes(messageBytes []byte) (EmissionsMessage, error) {
 	var temperatureIndex = altitudeIndex + 8
 	var temperature = math.Float64frombits(binary.BigEndian.Uint64(messageBytes[temperatureIndex : temperatureIndex+8]))
 
-	return EmissionsMessage{
-		tail_number:  tailNumberValue,
-		engine_count: engineCount,
-		engine_name:  engineNameValue,
-		latitude:     latitude,
-		longitude:    longitude,
-		altitude:     altitude,
-		temperature:  temperature,
+	return model.EmissionsMessage{
+		Tail_number:  tailNumberValue,
+		Engine_count: engineCount,
+		Engine_name:  engineNameValue,
+		Latitude:     latitude,
+		Longitude:    longitude,
+		Altitude:     altitude,
+		Temperature:  temperature,
 	}, nil
 }
 
-func validateHeader(messageBytes []byte) bool {
+func _validateHeader(messageBytes []byte) bool {
 	var expectedHeader = []byte{65, 73, 82} //  0100 0001 0100 1001 0101 0010
 
 	return messageBytes[0] == expectedHeader[0] && messageBytes[1] == expectedHeader[1] && messageBytes[2] == expectedHeader[2]
-}
-
-type EmissionsMessage struct {
-	tail_number  string  // The international aircraft registration. A unique code assigned to the aircraft.
-	engine_count int     // The number of engines on the aircraft.
-	engine_name  string  // The engine name.
-	latitude     float64 // The latitude in degrees.
-	longitude    float64 // The longitude in degrees.
-	altitude     float64 // The altitude in degrees.
-	temperature  float64 // The temperature in degrees Fahrenheit.
 }
