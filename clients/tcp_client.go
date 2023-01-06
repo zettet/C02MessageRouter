@@ -5,8 +5,8 @@ import (
 )
 
 const (
-	HOST = "localhost"
-	PORT = "3333"
+	HOST = "data.salad.com"
+	PORT = "5000"
 	TYPE = "tcp"
 )
 
