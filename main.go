@@ -9,13 +9,13 @@ import (
 )
 
 func main() {
-	tcpServer, err := clients.GetTCPAddr()
-	if err != nil {
-		fmt.Println(fmt.Sprintf("Error obtaining tcp addr: %v", err))
-		return
-	}
 
 	for true {
+		tcpServer, err := clients.GetTCPAddr()
+		if err != nil {
+			fmt.Println(fmt.Sprintf("Error obtaining tcp addr: %v", err))
+		}
+
 		err = handleMessage(tcpServer)
 		if err != nil {
 			fmt.Println(fmt.Sprintf("Error handling message: %v", err))
