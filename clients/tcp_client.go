@@ -5,28 +5,28 @@ import (
 )
 
 const (
-	HOST = "data.salad.com"
-	PORT = "5000"
+	HOST = "localhost"
+	PORT = "3333"
 	TYPE = "tcp"
 )
 
-func GetTCPConnection() (*net.TCPConn, error) {
+func GetTCPAddr() (*net.TCPAddr, error) {
 	tcpServer, err := net.ResolveTCPAddr(TYPE, HOST+":"+PORT)
 	if err != nil {
 		return nil, err
 	}
+	return tcpServer, err
+}
+
+func FetchTCPData(tcpServer *net.TCPAddr) ([]byte, error) {
 	connection, err := net.DialTCP(TYPE, nil, tcpServer)
 	if err != nil {
 		return nil, err
 	}
 
-	return connection, nil
-}
-
-func FetchTCPData(conn *net.TCPConn) ([]byte, error) {
 	received := make([]byte, 1024)
-	_, err := conn.Read(received)
-	conn.Close()
+	_, err = connection.Read(received)
+	connection.Close()
 	if err != nil {
 		return nil, err
 	}
