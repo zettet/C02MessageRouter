@@ -4,6 +4,10 @@ import (
 	"net"
 )
 
+/**
+tcp_client is responsible for connecting to a TCPADddr, defined by consts below, as well as returning a response as a []byte
+*/
+
 const (
 	HOST = "data.salad.com"
 	PORT = "5000"

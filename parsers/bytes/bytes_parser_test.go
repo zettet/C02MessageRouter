@@ -11,6 +11,15 @@ var testBytes = []byte{
 	235, 255, 29, 96, 192, 80, 212, 192, 142, 99, 1, 101, 64, 226, 3, 240,
 	0, 0, 0, 0, 192, 74, 153, 153, 153, 153, 153, 154,
 }
+
+var validHeaderInvalidPayload = []byte{
+	65, 73, 82, 0, 0, 0, 0, 99, 6,
+}
+
+var invalidHeader = []byte{
+	0, 0, 0,
+}
+
 var expectedMessage = model.EmissionsMessage{
 	Tail_number:  "N20904",
 	Engine_count: 2,
@@ -19,6 +28,22 @@ var expectedMessage = model.EmissionsMessage{
 	Longitude:    -67.32425269764424,
 	Altitude:     36895.5,
 	Temperature:  -53.2,
+}
+
+func Test_BytesParser_WithInvalidHeader_ReturnsError(t *testing.T) {
+	_, error := ParseMessage(invalidHeader)
+
+	if error == nil || error.Error() != "Invalid Header" {
+		t.Fatalf("exected error with message: 'Invalid Header'")
+	}
+}
+
+func Test_BytesParser_WithValidHeaderAndInvalidPayload_ReturnsError(t *testing.T) {
+	_, error := ParseMessage(validHeaderInvalidPayload)
+
+	if error == nil || error.Error() != "invalid message, message has a malformed payload" {
+		t.Fatalf("exected error with message: 'invalid message, message has a malformed payload'")
+	}
 }
 
 func Test_BytesParser_WithValidMessageBytes_ReturnsValidStruct(t *testing.T) {
